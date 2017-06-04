@@ -24,21 +24,45 @@ class Database {
     }
 
     public function insertVisitor() {
-        $con = $this->con;
-
-        $stmnt = $con->prepare("INSERT INTO eehrbach_visitors(ip_address, visitation_time) VALUES (:ipAddress, :visitationTime)");
-        $stmnt->execute(array(
-            "ipAddress" => "192.168.0.1",
-            "visitationTime" => date("Y-m-d H:i:s")
-        ));
+        try {
+            $stmnt = $this->con->prepare("INSERT INTO eehrbach_visitors(ip_address, visitation_time) VALUES (:ipAddress, :visitationTime)");
+            $stmnt->execute(array(
+                "ipAddress" => "192.168.0.1",
+                "visitationTime" => date("Y-m-d H:i:s")
+            ));
+            $this->con = null;
+        } catch (PDOException $e) {
+            $this->con = null;
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
     }
 
     public function getVisitors() {
-        $con = $this->con;
+        try {
+            $stmnt = $this->con->prepare("SELECT * FROM eehrbach_visitors");
+            $stmnt->execute();
+            $this->con = null;
+            return $stmnt->fetchAll();
 
-        $stmnt = $con->prepare("SELECT * FROM eehrbach_visitors");
-        $stmnt->execute();
+        } catch (PDOException $e) {
+            $this->con = null;
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
 
-        return $stmnt->fetchAll();
+    }
+
+    public function resetVisitors() {
+        try {
+            $stmnt = $this->con->prepare("DELETE FROM eehrbach_visitors; ALTER TABLE eehrbach_visitors AUTO_INCREMENT = 1");
+            $stmnt->execute();
+            $this->con = null;
+
+        } catch (PDOException $e) {
+            $this->con = null;
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
     }
 }
