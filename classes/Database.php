@@ -8,7 +8,6 @@ class Database {
     private $con;
     private $user = 'test';
     private $pass = 't3st3r123';
-    private $tablePrefix = 'eehrbach_';
 
     /**
      * DB constructor.
