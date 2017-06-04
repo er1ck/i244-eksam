@@ -27,7 +27,7 @@ class Database {
         try {
             $stmnt = $this->con->prepare("INSERT INTO eehrbach_visitors(ip_address, visitation_time) VALUES (:ipAddress, :visitationTime)");
             $stmnt->execute(array(
-                "ipAddress" => "192.168.0.1",
+                "ipAddress" => $_SERVER['REMOTE_ADDR'],
                 "visitationTime" => date("Y-m-d H:i:s")
             ));
             $this->con = null;
